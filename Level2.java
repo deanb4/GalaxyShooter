@@ -1,12 +1,15 @@
 import java.util.List;
 
-// Level2.java
- // Concrete subclass of Level — extends Level.
- //The second level of Galaxy Shooter — harder than Level1.
- //Spawns two rows of BasicEnemies plus one BossEnemy in the center.
- //Level is complete when ALL enemies including the boss are dead.
- //Inherits from Level: enemies list, levelNumber,
- // getEnemies(), getLevelNumber().
+/**
+ * Represents the second level of Galaxy Shooter.
+ *
+ * This level increases difficulty compared to Level1 by spawning more
+ * enemies, introducing multiple rows of BasicEnemy instances, and
+ * adding a BossEnemy partway through the level.
+ *
+ * The level is considered complete once the required number of kills
+ * has been reached.
+ */
 
 public class Level2 extends Level {
 
@@ -22,18 +25,24 @@ public class Level2 extends Level {
     private boolean bossSpawned = false;
 
     // Constructor
-    //Creates Level2.
-     // Passes level number 2 to the Level constructor.
 
-     // @param gameBullets  the shared bullet list from GamePanel
-     //passed into each enemy so they can shoot
 
+    /**
+     * Creates Level2.
+     *
+     * @param gameBullets shared bullet list used by enemies to fire projectiles
+    */
     public Level2(List<Bullet> gameBullets) {
         super(2);                        // level number = 2
         this.gameBullets = gameBullets;  // store bullet list for enemy creation
     }
 
-    // Abstract Method
+    /**
+     * Spawns the initial wave of BasicEnemy instances.
+     *
+     * Enemies are distributed across multiple columns with slight randomness
+     * in vertical positioning to create a staggered formation.
+     */
     @Override
     public void spawnEnemies() {
        int cols = MAX_ON_SCREEN;
@@ -45,11 +54,23 @@ public class Level2 extends Level {
        }
     }
 
+    /**
+     * Spawns a single BasicEnemy at a safe horizontal position.
+     */
     private void spawnBasic() {
         int x = findSafeX();
         enemies.add(new BasicEnemy(x,-60,gameBullets));
     }
 
+    /**
+     * Finds a safe x-coordinate for spawning an enemy.
+     *
+     * Ensures that the new enemy is not too close to existing ones.
+     * If no valid position is found after several attempts, a random
+     * position is returned as a fallback.
+     *
+     * @return a valid x-coordinate for spawning
+     */
     private int findSafeX() {
         int attempts = 20;
         while (attempts-- > 0) {
@@ -63,6 +84,13 @@ public class Level2 extends Level {
         return (int)(Math.random() * (700-48));
     }
 
+    /**
+     * Updates the level each frame.
+     *
+     * Removes off-screen enemies, spawns a boss after a certain number
+     * of kills, and continues spawning BasicEnemy instances until the
+     * maximum on-screen limit is reached.
+    */
     @Override
     public void update() {
         if (isComplete()) return;
@@ -82,9 +110,34 @@ public class Level2 extends Level {
         }
     }
 
+    /**
+     * Called when an enemy is killed.
+     *
+     * Increments the kill counter used to track level progress.
+     */
     @Override public void onEnemyKilled() { killCount++; }
+
+    /**
+     * Returns the number of enemies killed so far.
+     *
+     * @return current kill count
+     */
     @Override public int getKillCount() { return killCount; }
+
+    /**
+     * Returns the number of kills required to complete the level.
+     *
+     * @return required kill count
+     */
     @Override public int getKillsRequired() { return KILLS_REQUIRED;}
+
+     /**
+     * Determines whether the level is complete.
+     *
+     * The level ends when the required number of kills is reached.
+     *
+     * @return true if the level is complete, false otherwise
+     */
     @Override
     public boolean isComplete() {
         return killCount >= KILLS_REQUIRED;

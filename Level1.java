@@ -1,12 +1,15 @@
 import java.util.List;
 
-//  Level1.java
- // Concrete subclass of Level — extends Level.
- // The first level of Galaxy Shooter.
- // Spawns a single row of 5 BasicEnemies across the top of the screen.
- // No boss enemy — designed to ease the player into the game.
- //Inherits from Level: enemies list, levelNumber,
- // getEnemies(), getLevelNumber().
+/**
+ * Represents the first level of Galaxy Shooter.
+ *
+ * This level introduces the player to basic gameplay by spawning only
+ * BasicEnemy instances. It begins with a row of enemies at the top of
+ * the screen and continues spawning additional enemies over time.
+ *
+ * The level is completed once the player reaches the required number
+ * of kills.
+ */
 
 public class Level1 extends Level {
     private static final int KILLS_REQUIRED = 10;
@@ -20,11 +23,12 @@ public class Level1 extends Level {
     private int spawnTimer = 0;
 
     // Constructor
-    // Creates Level1.
-     //Passes level number 1 to the Level constructor.
-   //  @param gameBullets  the shared bullet list from GamePanel
-    //  passed into each enemy so they can shoot
 
+    /**
+     * Creates Level1.
+     *
+     * @param gameBullets the shared bullet list used by enemies to fire projectiles
+    */
     public Level1(List<Bullet> gameBullets) {
         super(1);                        // level number = 1
         this.gameBullets = gameBullets;  // store bullet list for enemy creation
@@ -32,11 +36,12 @@ public class Level1 extends Level {
 
     // Abstract Metho
 
-    // Spawns 5 BasicEnemies in a horizontal row near the top of the screen, this number can change
-     //Called ONCE by the game when Level 1 starts loading.
-     //Each enemy is spaced 100px apart starting at x = 80.
-     //All enemies are added to the inherited enemies list.
-
+    /**
+     * Spawns the initial set of enemies.
+     *
+     * Five BasicEnemy instances are placed in a horizontal row
+     * near the top of the screen.
+    */
     @Override
     public void spawnEnemies() {
         for (int i = 0; i < 5; i++) {
@@ -47,12 +52,25 @@ public class Level1 extends Level {
         }
     }
 
-    /* Pick a random X that is at least MIN_SPACING  away from every linve enemy */
+     /**
+     * Spawns a single enemy at a safe horizontal position.
+     *
+     * The position is chosen to maintain spacing between existing enemies.
+     */
     private void spawnOne() {
         int x = findSafeX();
         enemies.add(new BasicEnemy(x,-60,gameBullets));
     }
 
+    /**
+     * Finds a safe horizontal position for spawning a new enemy.
+     *
+     * Attempts to find a position that is at least MIN_SPACING pixels away
+     * from all existing enemies. If no suitable position is found after
+     * several attempts, a random position is used as a fallback.
+     *
+     * @return a valid x-coordinate for spawning an enemy
+     */
     private int findSafeX() {
         int attempts = 20;
         while (attempts-- > 0) {
@@ -71,6 +89,12 @@ public class Level1 extends Level {
         return (int)(Math.random() * (700-48));
     }
 
+    /**
+     * Updates the level each frame.
+     *
+     * Removes enemies that move off-screen and periodically spawns new ones
+     * if the number of active enemies is below the maximum allowed.
+    */
     @Override
     public void update() {
         if (isComplete()) return;
@@ -82,15 +106,36 @@ public class Level1 extends Level {
         }
     }
 
-    //Returns true when every enemy in this level is dead.
-    //Called by the game loop EVERY FRAME to check win condition.
-     // When true, the game loads Level2.
-     //
-     // @return boolean — true when all enemies have health <= 0
 
+    /**
+     * Called when an enemy is killed.
+     *
+     * Increments the kill count used to track level progress.
+     */
     @Override public void onEnemyKilled() { killCount++; }
+
+    /**
+     * Returns the current number of kills.
+     *
+     * @return the number of enemies defeated
+     */
     @Override public int getKillCount() { return killCount; }
+
+    /**
+     * Returns the number of kills required to complete the level.
+     *
+     * @return the required kill count
+     */
     @Override public int getKillsRequired() {return KILLS_REQUIRED; }
+
+
+    /**
+     * Determines whether the level is complete.
+     *
+     * The level is complete when the player reaches the required number of kills.
+     *
+     * @return true if the level is complete, false otherwise
+     */
     @Override
     public boolean isComplete() {
         // stream through all enemies — level is complete when every one isDead()

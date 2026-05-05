@@ -1,13 +1,17 @@
 import java.util.List;
 
 /**
- * Level 3 - Fast BasicEnemies + two BossEnemies mid wave.
- * Spawn interval every 1 second (60 frames).
- * First boss spawns at 10 kills second at 20 kills
- * Level ends after 30 kills 
+ * Represents the third level of Galaxy Shooter.
+ *
+ * This level increases difficulty by introducing faster enemy spawning
+ * and two BossEnemy encounters during the wave. BasicEnemy units spawn
+ * continuously while bosses appear at specific kill thresholds.
+ *
+ * The level is completed once the required number of kills is reached.
  */
-
 public class Level3 extends Level {
+
+    // static fields
     private static final int KILLS_REQUIRED = 30;
     private static final int MAX_ON_SCREEN = 7;
     private static final int SPAWN_INTERVAL = 60;
@@ -15,17 +19,29 @@ public class Level3 extends Level {
     private static final int BOSS2_SPAWN_AT = 20;
     private static final int MIN_SPACING = 70;
 
-    private final List<Bullet> gameBullets;
+    private final List<Bullet> gameBullets;  /** Shared bullet list used by enemies */
     private int killCount = 0;
     private int spawnTimer = 0;
     private boolean boss1Spawned = false;
     private boolean boss2Spawned = false;
 
+
+    /**
+     * Creates Level3.
+     *
+     * @param gameBullets shared bullet list used by enemies to fire projectiles
+     */
     public Level3(List<Bullet> gameBullets) {
         super(3);
         this.gameBullets = gameBullets;
     }
 
+    /**
+     * Spawns the initial wave of BasicEnemy instances.
+     *
+     * Enemies are distributed across the screen with slight vertical staggering
+     * to create a more dynamic formation.
+     */
     @Override
     public void spawnEnemies() {
         int cols = MAX_ON_SCREEN;
@@ -37,11 +53,22 @@ public class Level3 extends Level {
         }
     }
 
+     /**
+     * Spawns a single BasicEnemy at a safe horizontal position.
+     */
     private void spawnBasic() {
         int x = findSafeX();
         enemies.add(new BasicEnemy(x, -60, gameBullets));
     }
 
+    /**
+     * Finds a safe x-coordinate for spawning an enemy.
+     *
+     * Attempts to avoid placing enemies too close to each other.
+     * If no valid position is found, a random position is returned.
+     *
+     * @return a valid x-coordinate for spawning an enemy
+     */
     private int findSafeX() {
         int attempts = 20;
         while (attempts-- > 0) {
@@ -57,6 +84,12 @@ public class Level3 extends Level {
         return (int)(Math.random() * (700 - 48));
     }
 
+    /**
+     * Updates the level each frame.
+     *
+     * Removes off-screen enemies, spawns two bosses at different kill thresholds,
+     * and continues spawning BasicEnemy instances while respecting on-screen limits.
+     */
     @Override
     public void update() {
         if (isComplete()) return;
@@ -83,8 +116,35 @@ public class Level3 extends Level {
         }
     }
 
+
+    /**
+     * Called when an enemy is killed.
+     *
+     * Increments the kill counter used to track level progress.
+     */
     @Override public void onEnemyKilled() { killCount++; }
+
+    /**
+     * Determines whether the level is complete.
+     *
+     * The level ends when the required number of kills is reached.
+     *
+     * @return true if the level is complete, false otherwise
+     */
     @Override public boolean isComplete() { return killCount >= KILLS_REQUIRED; }
+
+
+    /**
+     * Returns the number of enemies killed so far.
+     *
+     * @return current kill count
+     */
     @Override public int getKillCount() { return killCount; }
+
+    /**
+     * Returns the number of kills required to complete the level.
+     *
+     * @return required kill count
+     */
     @Override public int getKillsRequired() { return KILLS_REQUIRED; }
 }

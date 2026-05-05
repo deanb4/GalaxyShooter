@@ -2,23 +2,40 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-// EnemyBullet.java
-  // Concrete subclass of Bullet — extends Bullet.
-  // Fired by BasicEnemy and BossEnemy via their shoot() method.
-  // Moves DOWN the screen toward the player.
-  // Inherits from Bullet: x, y, speed, damage, active,
-  //getX(), getY(), getDamage(), isActive(), deactivate(), getBounds().
+/**
+ * A projectile fired by enemy units in Galaxy Shooter.
+ *
+ * Concrete subclass of {@link Bullet}. Spawned by {@link BasicEnemy}
+ * and {@link BossEnemy} via their {@code shoot()} methods. Travels
+ * downward the screen toward the player at 5 pixels per frame
+ * and deals 1 point of damage on impact.
+ *
+ * Inherits from {@link Bullet}: {@code x}, {@code y}, {@code speed},
+ * {@code damage}, {@code active}, {@link Bullet#getX()},
+ * {@link Bullet#getY()}, {@link Bullet#getDamage()},
+ * {@link Bullet#isActive()}, {@link Bullet#deactivate()},
+ * {@link Bullet#getBounds()}.
+ *
+ * Sprite: {@code /images/enemyBullet.png}
+ *
+ * @see Bullet
+ * @see PlayerBullet
+ */
 
 public class EnemyBullet extends Bullet {
 
     private final BufferedImage sprite;
-    // Constructor
-    // Creates an EnemyBullet at the given position.
-     // Spawned just below the enemy that fired it via shoot().
-     //
-      // @param x  horizontal position — center of the enemy that fired it
-    //  @param y  vertical position — just below the bottom of the enemy sprite
-
+   
+    /**
+     * Creates an EnemyBullet at the specified position.
+     *
+     * Typically spawned just below the firing enemy's sprite so the
+     * bullet appears to emerge from the enemy's underside. For example,
+     * {@link BasicEnemy#shoot()} passes {@code (x + 21, y + 48)}
+     *
+     * @param x horizontal spawn position (pixels from left edge)
+     * @param y vertical spawn position (pixels from top edge)
+     */
     public EnemyBullet(int x, int y) {
         super(x, y);        // calls Bullet constructor — sets x, y, active = true
         this.speed  = 5;    // moves 5 pixels down per frame — slower than player bullets
@@ -35,26 +52,40 @@ public class EnemyBullet extends Bullet {
 
     //Abstract Methods
 
-    // Moves the bullet DOWN the screen by speed pixels each frame.
-     // Positive y direction = moving toward bottom of screen in Java Swing.
-     // Called by the game loop EVERY FRAME via bullet.update().
-     // Player deactivates this bullet when y > screen height
 
+    
+    /**
+     * Moves the bullet down the screen by {@link #speed} pixels.
+     *
+     * In Java Swing, positive y values move toward the bottom of the
+     * window, so adding to {@code y} advances the bullet toward the player.
+     * Called by the game loop every frame. The game loop should call
+     * {@link #deactivate()} when {@code y} exceeds the screen height
+     */
     @Override
     public void update() {
         y += speed;   // moves DOWN toward the player
     }
 
-    // Returns the sprite image for this bullet.
-     // Called by paintComponent() EVERY FRAME to draw the bullet.
-     //Loads enemyBullet.png from the /images/ resources folder.
-     //Returns null if image not found —
 
+
+    /**
+     * Loads and returns the sprite image for this bullet.
+     * The image is read fresh each call from the classpath resource
+     * {@code /images/enemyBullet.png}.
+     *
+     * @return the enemy bullet sprite as a {@link BufferedImage}, or
+     * {@code null} if the image resource cannot be located
+    */
     @Override
     public BufferedImage getSprite() {
       return sprite;
     }
     
+    /**
+     * Draws the bullet at current location
+     * @param g Graphics2D object
+     */
     @Override
     public void draw(Graphics2D g) {
         if (sprite != null) {

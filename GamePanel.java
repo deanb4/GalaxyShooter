@@ -6,13 +6,14 @@ import java.util.List;
 
 
 /**
- * Gamepanel - Swing panel and 60 FPS game loop
- * 
- * Game States:
- * Playing | Level Complete
- * Game Over | Win
- * 
- * levels : 1 -> 2 -> 3 -> BossLevel (4)
+ * Main game panel for Galaxy Shooter.
+ *
+ * This class handles the game loop (60 FPS), input processing,
+ * rendering, collision detection, level progression, and game state
+ * management.
+ *
+ * The game progresses through multiple levels and ends when the
+ * final boss is defeated or the player loses all lives.
  */
 
 public class GamePanel extends JPanel implements ActionListener {
@@ -49,6 +50,9 @@ public class GamePanel extends JPanel implements ActionListener {
     // Timer
     private final Timer gameTimer = new Timer(16,this);
 
+     /**
+     * Creates the game panel and initializes the game.
+     */
     public GamePanel() {
         setPreferredSize(new Dimension(WIDTH,HEIGHT));
         setBackground(Color.BLACK);
@@ -89,13 +93,20 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
 
-    // Init level and Loading
+     /**
+     * Initializes game objects and loads the first level.
+     */
     private void initGame() {
         bullets = new ArrayList<>();
         player = new Player(WIDTH / 2 - Player.WIDTH / 2, HEIGHT - 100, 3, bullets);
         loadLevel(1);
     }
 
+    /**
+     * Loads a specific level.
+     *
+     * @param number level number to load
+     */
     private void loadLevel(int number) {
         levelNumber = number;
         bullets.clear();
@@ -108,7 +119,9 @@ public class GamePanel extends JPanel implements ActionListener {
         level.spawnEnemies();
     }
 
-    // Game loop
+    /**
+     * Main game loop callback (60 FPS).
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (state) {
@@ -119,7 +132,9 @@ public class GamePanel extends JPanel implements ActionListener {
         repaint();
     }
 
-    /** Counts down the level X complete screen then loads the next level */
+    /**
+     * Handles timing for the level complete screen.
+     */
     private void tickLevelComplete() {
         levelCompleteTimer++;
         if (levelCompleteTimer >= LEVEL_COMPLETE_DURATION) {
@@ -129,6 +144,9 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Updates all game logic each frame.
+     */
     private void update() {
 
         // 1. Update Player
@@ -221,8 +239,10 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
 
-    // Rendering
-
+    
+    /**
+     * Paints all game visuals.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // use parents method to clear canvas and set it up for repainting
@@ -240,7 +260,9 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+     * Draws the starfield background.
+     */
     private void drawBackground(Graphics2D g) {
         g.setColor(Color.BLACK);
         g.fillRect(0,0,WIDTH,HEIGHT);
@@ -252,7 +274,9 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
-    // draw to gameboard
+    /**
+     * Draws all game entities.
+    */
     private void drawScene(Graphics2D g) {
         player.draw(g);
         for (Bullet b : new ArrayList<>(bullets)) {
@@ -262,7 +286,9 @@ public class GamePanel extends JPanel implements ActionListener {
         drawHUD(g);
     }
 
-    // HUD
+     /**
+     * Draws the HUD (score, lives, level, progress bar).
+     */
     private void drawHUD(Graphics2D g) {
         // Background bar
         g.setColor(new Color(0,0,0, 180));
@@ -319,7 +345,10 @@ public class GamePanel extends JPanel implements ActionListener {
         g.drawString(killStr, (WIDTH - fm.stringWidth(killStr)) / 2, barY + 24);
     }
 
-    // Level complete overlay
+    /**
+     * level complete overlay
+     * @param g Graphis2D object
+    */
     private void drawLevelComplete(Graphics2D g) {
         // Dim background
         g.setColor(new Color(0,0,0, 160));
@@ -352,7 +381,12 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
-    // End game overlay (Game over / Win)
+    /**
+     * End Game overlay
+     * @param g Graphis2D object
+     * @param title
+     * @param titleColor
+    */
     private void drawEndOverlay(Graphics2D g, String title, Color titleColor) {
         g.setColor(new Color(0,0,0,190)); // added opacity too at 190
         g.fillRect(0,0,WIDTH,HEIGHT);
@@ -375,7 +409,9 @@ public class GamePanel extends JPanel implements ActionListener {
         g.drawString(hint, (WIDTH - fm.stringWidth(hint)) / 2, HEIGHT / 2+50);
     }
     
-    // Restart
+     /**
+     * Restarts the game from level 1.
+     */
     private void restartGame() {
         score = 0;
         levelCompleteTimer = 0;
@@ -386,7 +422,5 @@ public class GamePanel extends JPanel implements ActionListener {
         gameTimer.restart();
         requestFocusInWindow();
     }
-
-    
 
 }
