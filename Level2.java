@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Level2 extends Level {
 
-    private static final int KILLS_REQUIRED = 20;
+    private static final int KILLS_REQUIRED = 1;
     private static final int MAX_ON_SCREEN = 6;
     private static final int SPAWN_INTERVAL = 90;
     private static final int BOSS_SPAWN_AT = 10;

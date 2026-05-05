@@ -93,7 +93,7 @@ public abstract class Enemy {
     }
 
     // Concrete Methods
-    
+
     /**
      * Returns the enemy's current horizontal position.
      *
@@ -133,7 +133,6 @@ public abstract class Enemy {
     public void takeDamage(int amt) { health -= amt; }
 
 
-    
     /**
      * Returns the axis-aligned bounding box used for collision detection.
      * Override in subclasses that use a different size.

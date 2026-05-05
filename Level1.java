@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 public class Level1 extends Level {
-    private static final int KILLS_REQUIRED = 10;
+    private static final int KILLS_REQUIRED = 1;
     private static final int MAX_ON_SCREEN = 5;
     private static final int SPAWN_INTERVAL = 120;
     private static final int MIN_SPACING = 90; // min px between enemies

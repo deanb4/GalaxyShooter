@@ -139,7 +139,7 @@ public void draw(Graphics2D g) {
 
 /**
  * Returns the axis-aligned bounding box for collision detection.
- * Matches the 48&times;48 pixel size of the sprite.
+ * Matches the 48x48 pixel size of the sprite.
  *
  * @return a {@link Rectangle} at this enemy's current position
  */

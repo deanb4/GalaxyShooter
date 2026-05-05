@@ -4,7 +4,6 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Main game panel for Galaxy Shooter.
  *
